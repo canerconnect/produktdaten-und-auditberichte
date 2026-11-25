@@ -1,0 +1,6 @@
+zeitpunkt	dienst	ergebnis
+2026-11-02T09:00:00Z	katalog	OK
+2026-11-01T23:55:00Z	portal	FEHLER
+2026-11-02T01:05:00+02:00	portal	OK
+2026-11-02T10:02:00Z	katalog	FEHLER
+2026-11-02T10:04:00Z	portal	OK
