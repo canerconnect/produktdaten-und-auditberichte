@@ -1,0 +1,27 @@
+name: Projekttests
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  tests:
+    name: Python und Java
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Quellcode laden
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+      - name: Produktdatenprüfer testen
+        run: python3 -m unittest discover -s produktdaten -p 'test_*.py' -v
+      - name: Auditbericht mit Java 17 kompilieren und testen
+        run: |
+          mkdir -p build
+          "$JAVA_HOME_17_X64/bin/javac" --release 17 -encoding UTF-8 -d build auditbericht/AuditReport.java auditbericht/AuditReportTest.java
+          "$JAVA_HOME_17_X64/bin/java" -cp build AuditReportTest

@@ -5,6 +5,7 @@ import csv
 import json
 import re
 import sys
+from collections import Counter
 from pathlib import Path
 
 
@@ -52,6 +53,8 @@ def pruefe_katalog(datei):
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("datei", type=Path, help="CSV-Datei, UTF-8, Trennzeichen Semikolon")
+    parser.add_argument("--statistik", action="store_true",
+                        help="Anzahl der betroffenen Datensätze pro Regel in den JSON-Bericht aufnehmen")
     args = parser.parse_args(argv)
     try:
         with args.datei.open(encoding="utf-8-sig", newline="") as datei:
@@ -59,6 +62,9 @@ def main(argv=None):
     except (OSError, UnicodeError, ValueError, csv.Error) as fehler:
         print(f"Datei kann nicht geprüft werden: {fehler}", file=sys.stderr)
         return 2
+    if args.statistik:
+        haeufigkeiten = Counter(regel for hinweis in bericht["hinweise"] for regel in hinweis["regeln"])
+        bericht["fehler_pro_regel"] = dict(sorted(haeufigkeiten.items()))
     print(json.dumps(bericht, ensure_ascii=False, indent=2))
     return 1 if bericht["hinweise"] else 0
 

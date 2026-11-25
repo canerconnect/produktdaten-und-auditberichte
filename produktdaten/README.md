@@ -9,6 +9,7 @@ Im Hauptverzeichnis des Repositorys ausführen.
 ```text
 python produktdaten/katalogcheck.py produktdaten/beispiel.csv
 python produktdaten/katalogcheck.py produktdaten/gueltig.csv
+python produktdaten/katalogcheck.py produktdaten/beispiel.csv --statistik
 python -m unittest discover -s produktdaten -p "test_*.py" -v
 ```
 
@@ -22,6 +23,8 @@ Die Eingabe verwendet UTF-8, optional mit BOM, und ein Semikolon als Trennzeiche
 | bestand | Nichtnegative ganze Zahl aus Ziffern. |
 
 Die Beispieldatei enthält ein Duplikat im dritten Datensatz. Der vierte enthält einen leeren Namen, einen Dezimalpunkt und einen negativen Bestand. Erwartet werden insgesamt vier Artikel, davon zwei mit Fehlern. Die Datei `gueltig.csv` zeigt eine korrigierte Fassung.
+
+Mit `--statistik` zeigt das zusätzliche JSON-Feld `fehler_pro_regel`, wie viele Datensätze jede Regel verletzen. Im Beispiel sind zwei Artikel betroffen. Zusammen lösen sie vier unterschiedliche Regeln aus. Bei einem gültigen Katalog ist die Zählung leer.
 
 Exitcode 0 steht für einen gültigen Katalog, 1 für fehlerhafte Datensätze und 2 für eine unlesbare oder strukturell unbrauchbare Datei. Eine unpassende Spaltenzahl in einer einzelnen Zeile wird als Datenfehler gemeldet.
 

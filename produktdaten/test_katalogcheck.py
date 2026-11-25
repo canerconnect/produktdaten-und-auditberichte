@@ -1,4 +1,5 @@
 import io
+import json
 import unittest
 from contextlib import redirect_stderr, redirect_stdout
 from pathlib import Path
@@ -39,6 +40,29 @@ class KatalogTest(unittest.TestCase):
     def test_spaltenreihenfolge_ist_flexibel(self):
         bericht = pruefe_katalog(io.StringIO("name;bestand;artikelnummer;preis_eur\nMaus;4;Z;8,25\n"))
         self.assertEqual(bericht["fehlerhafte_datensaetze"], 0)
+
+    def test_statistik_zaehlt_jede_betroffene_regel(self):
+        with TemporaryDirectory() as temp:
+            pfad = Path(temp, "artikel.csv")
+            pfad.write_text(KOPF + "A;;2.00;1\nA;;3,00;0\n", encoding="utf-8")
+            with redirect_stdout(io.StringIO()) as ausgabe:
+                self.assertEqual(main([str(pfad), "--statistik"]), 1)
+            bericht = json.loads(ausgabe.getvalue())
+            self.assertEqual(bericht["fehlerhafte_datensaetze"], 2)
+            self.assertEqual(bericht["fehler_pro_regel"], {
+                "artikelnummer_doppelt": 1, "name_fehlt": 2, "preisformat": 1
+            })
+
+    def test_statistik_ist_optional_und_gueltige_daten_ergeben_leere_zaehlung(self):
+        with TemporaryDirectory() as temp:
+            pfad = Path(temp, "artikel.csv")
+            pfad.write_text(KOPF + "A;Mappe;2,00;1\n", encoding="utf-8")
+            with redirect_stdout(io.StringIO()) as ausgabe:
+                self.assertEqual(main([str(pfad)]), 0)
+            self.assertNotIn("fehler_pro_regel", json.loads(ausgabe.getvalue()))
+            with redirect_stdout(io.StringIO()) as ausgabe:
+                self.assertEqual(main(["--statistik", str(pfad)]), 0)
+            self.assertEqual(json.loads(ausgabe.getvalue())["fehler_pro_regel"], {})
 
     def test_dateiaufruf_bom_und_exitcodes(self):
         with TemporaryDirectory() as temp, redirect_stdout(io.StringIO()), redirect_stderr(io.StringIO()):

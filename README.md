@@ -9,18 +9,20 @@ Zwei kleine, lokal ausführbare Lernprojekte für Anwendungsentwicklung. Beide v
 
 ## Ausprobieren
 
-Im Hauptverzeichnis des entpackten Projekts eine Konsole öffnen. Unter Windows kann für Python auch `py` verwendet werden.
+Im Hauptverzeichnis des Projekts eine Konsole öffnen. Unter Windows kann für Python auch `py` verwendet werden.
 
 ```text
 python produktdaten/katalogcheck.py produktdaten/beispiel.csv
 java auditbericht/AuditReport.java auditbericht/beispiel.tsv
 ```
 
+Mit `--statistik` ergänzt der Produktdatenprüfer seinen JSON-Bericht um die Anzahl der betroffenen Artikel pro Fehlerregel.
+
 Der erste Aufruf meldet zwei fehlerhafte Datensätze unter vier Artikeln und setzt dafür absichtlich Exitcode 1. Beim zweiten ergibt sich für das Portal am 1. November ein Erfolg und ein Fehlversuch. Ein Zeitstempel im Beispiel enthält einen Zeitzonenversatz. Der Bericht zählt ihn zum UTC-Tag.
 
 ## Woran sich die Ergebnisse prüfen lassen
 
-Sieben Python-Tests und sieben Java-Prüffälle decken unter anderem doppelte Artikelnummern, ungültige Preise und den UTC-Tageswechsel ab. Nach jeder Änderung auf `main` führt GitHub Actions beide Testsuiten aus. Die einzelnen Prüfschritte und ihr Ergebnis stehen im [Testprotokoll](https://github.com/canerconnect/produktdaten-und-auditberichte/actions/workflows/tests.yml).
+Neun Python-Tests und sieben Java-Prüffälle decken unter anderem doppelte Artikelnummern, ungültige Preise und den UTC-Tageswechsel ab. Nach jeder Änderung auf `main` führt GitHub Actions beide Testsuiten aus. Die einzelnen Prüfschritte und ihr Ergebnis stehen im [Testprotokoll](https://github.com/canerconnect/produktdaten-und-auditberichte/actions/workflows/tests.yml).
 
 ## Entstehung und Lernstand
 
